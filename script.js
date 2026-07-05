@@ -5,7 +5,7 @@ let gameActive = false;      // Tracks if game is currently running
 let spawnInterval;          // Holds the interval for spawning items
 let timerInterval;
 let timeLeft = 30;
-let currentDifficulty = 'easy';
+let currentLvl = 'easy';
 
 // Creates the 3x3 game grid where items will appear
 function createGrid() {
@@ -43,9 +43,9 @@ function spawnWaterCan() {
 // Initializes and starts a new game
 function startGame() {
   if (gameActive) return; // Prevent starting a new game if one is already active
-  gameActive = true;
+    gameActive = true;
   currentCans = 0;
-  timeLeft = 30;
+  timeLeft = settings.time;
   updatePointsDisplay();
   updateTimerDisplay();
   clearAchievementMessage();
@@ -100,12 +100,17 @@ if (!clickedCan || !gameActive) return;
   currentCans += 1;
   updatePointsDisplay();
   clickedCan.closest('.water-can-wrapper').innerHTML = '';
+
+  if (currentCans >= currentGoal) {
+    endGame();
+    showEndMessage();
+  }
 });
 updateTimerDisplay();
 
 function showEndMessage() {
 const achievementDisplay = document.getElementById('achievements');
-  if (achievementDisplay && currentCans > GOAL_CANS) {
+  if (achievementDisplay && currentCans >= currentGoal) {
     achievementDisplay.textContent = 'Congratulations! You win!';
     if (typeof confetti === 'function') {
       confetti({
@@ -128,8 +133,13 @@ const achievementDisplay = document.getElementById('achievements');
 
 //Difficulty function
 
-const lvlSelector = document.getElementById("lvlSelector");
-lvlSelector.addEventListener("change", difficulty);
+const lvlSelector = document.getElementById("level");
+if (lvlSelector) {
+  lvlSelector.addEventListener("change", function(event) {
+    currentLvl = event.target.value;
+    currentGoal = getCurrentSettings().goal;
+  });
+}
 
 const lvlSettings = {
 easy: { time: 30, spawnInterval: 1400, goal: 15 },
@@ -138,5 +148,5 @@ hard: { time: 30, spawnInterval: 700, goal: 25 }
 };
 
 function getCurrentSettings() {
-return lvlSettings[currentDifficulty] || lvlSettings.easy;
+return lvlSettings[currentLvl] || lvlSettings.easy;
 }
