@@ -124,6 +124,9 @@ if (!clickedCan || !gameActive) return;
 
   currentCans += 1;
   updatePointsDisplay();
+  clickedCan.classList.remove('Success');
+  void clickedCan.offsetWidth;
+  clickedCan.classList.add('Success');
   clickedCan.closest('.water-can-wrapper').innerHTML = '';
   playPointSound();
 

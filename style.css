@@ -138,15 +138,10 @@ h1 img {
   transform-origin: center; /* Ensure scaling happens from the center */
 }
 
-@keyframes popUp {
-  0% {
-    transform: scale(0.5); /* Start scaling from the center */
-  }
-  100% {
-    transform: scale(1); /* End scaling at full size */
-  }
+.water-can.Success {
+  box-shadow: 0 0 16px 6px rgba(255, 201, 7, 0.85);
+  filter: brightness(1.15);
 }
-
 
 button {
   background-color: #003366;
