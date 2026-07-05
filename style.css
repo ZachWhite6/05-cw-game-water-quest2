@@ -23,7 +23,7 @@ Fonts:
 }
 
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'Proxima Nova', Proxima Nova Bold, sans-serif;
   margin: 0;
   padding: 30px;
   background-color: #ffc907;
@@ -180,4 +180,20 @@ button {
   border-radius: 6px;
   font-size: 16px;
   background-color: #fff;
+}
+
+.gameFooter {
+  text-align: center;
+  margin-top: 20px;
+  padding-bottom: 10px;
+}
+
+.gameFooter a {
+  color: #003366;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.gameFooter a:hover {
+  text-decoration: underline;
 }

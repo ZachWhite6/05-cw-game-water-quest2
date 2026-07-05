@@ -1,11 +1,36 @@
 // Game configuration and state variables
-const GOAL_CANS = 25;        // Total items needed to collect
 let currentCans = 0;         // Current number of items collected
 let gameActive = false;      // Tracks if game is currently running
 let spawnInterval;          // Holds the interval for spawning items
 let timerInterval;
 let timeLeft = 30;
 let currentLvl = 'easy';
+
+const pointSound = new Audio('https://raw.githubusercontent.com/ramil25/awesome-sound-effects/master/sounds/coin.wav');
+pointSound.preload = 'auto';
+
+function playPointSound() {
+  pointSound.currentTime = 0;
+  pointSound.play().catch(() => {});
+}
+
+const winSound = new Audio('https://raw.githubusercontent.com/ramil25/awesome-sound-effects/master/sounds/applause.wav');
+winSound.preload = 'auto';
+
+function playWinSound() {
+  winSound.currentTime = 0;
+  winSound.play().catch(() => {});
+}
+
+const lvlSettings = {       //Total items needed to collect based on level chosen
+  easy: {goal: 10},
+  medium: {goal: 20},
+  hard: {goal: 25}
+};
+
+function getCurrentSettings() {
+  return lvlSettings[currentLvl] || lvlSettings.easy;
+}
 
 // Creates the 3x3 game grid where items will appear
 function createGrid() {
@@ -43,9 +68,9 @@ function spawnWaterCan() {
 // Initializes and starts a new game
 function startGame() {
   if (gameActive) return; // Prevent starting a new game if one is already active
-    gameActive = true;
+  gameActive = true;
   currentCans = 0;
-  timeLeft = settings.time;
+  timeLeft = 30;
   updatePointsDisplay();
   updateTimerDisplay();
   clearAchievementMessage();
@@ -100,8 +125,10 @@ if (!clickedCan || !gameActive) return;
   currentCans += 1;
   updatePointsDisplay();
   clickedCan.closest('.water-can-wrapper').innerHTML = '';
+  playPointSound();
 
-  if (currentCans >= currentGoal) {
+  const settings = getCurrentSettings();
+  if (currentCans >= settings.goal) {
     endGame();
     showEndMessage();
   }
@@ -110,7 +137,9 @@ updateTimerDisplay();
 
 function showEndMessage() {
 const achievementDisplay = document.getElementById('achievements');
-  if (achievementDisplay && currentCans >= currentGoal) {
+  const settings = getCurrentSettings();
+  if (achievementDisplay && currentCans >= settings.goal) {
+    playWinSound();
     achievementDisplay.textContent = 'Congratulations! You win!';
     if (typeof confetti === 'function') {
       confetti({
@@ -119,7 +148,7 @@ const achievementDisplay = document.getElementById('achievements');
         origin: { y: 0.6 }
       });
     }
-  } else {
+  } else if (achievementDisplay) {
     achievementDisplay.textContent = 'Time is up! Try again.';
   }
 }
@@ -131,22 +160,11 @@ const achievementDisplay = document.getElementById('achievements');
   }
 }
 
-//Difficulty function
-
-const lvlSelector = document.getElementById("level");
-if (lvlSelector) {
-  lvlSelector.addEventListener("change", function(event) {
+// Difficulty selector
+const levelSelector = document.getElementById('level');
+if (levelSelector) {
+  levelSelector.addEventListener('change', function(event) {
     currentLvl = event.target.value;
-    currentGoal = getCurrentSettings().goal;
   });
 }
 
-const lvlSettings = {
-easy: { time: 30, spawnInterval: 1400, goal: 15 },
-medium: { time: 30, spawnInterval: 1000, goal: 20 },
-hard: { time: 30, spawnInterval: 700, goal: 25 }
-};
-
-function getCurrentSettings() {
-return lvlSettings[currentLvl] || lvlSettings.easy;
-}
