@@ -5,6 +5,7 @@ let gameActive = false;      // Tracks if game is currently running
 let spawnInterval;          // Holds the interval for spawning items
 let timerInterval;
 let timeLeft = 30;
+let currentDifficulty = 'easy';
 
 // Creates the 3x3 game grid where items will appear
 function createGrid() {
@@ -113,6 +114,8 @@ const achievementDisplay = document.getElementById('achievements');
         origin: { y: 0.6 }
       });
     }
+  } else {
+    achievementDisplay.textContent = 'Time is up! Try again.';
   }
 }
 
@@ -121,4 +124,19 @@ const achievementDisplay = document.getElementById('achievements');
   if (achievementDisplay) {
     achievementDisplay.textContent = '';
   }
+}
+
+//Difficulty function
+
+const lvlSelector = document.getElementById("lvlSelector");
+lvlSelector.addEventListener("change", difficulty);
+
+const lvlSettings = {
+easy: { time: 30, spawnInterval: 1400, goal: 15 },
+medium: { time: 30, spawnInterval: 1000, goal: 20 },
+hard: { time: 30, spawnInterval: 700, goal: 25 }
+};
+
+function getCurrentSettings() {
+return lvlSettings[currentDifficulty] || lvlSettings.easy;
 }
